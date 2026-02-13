@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+
+# Virtual environments
+.env
+.venv/
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# PyTorch / HuggingFace cache
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Audio files (keep samples)
+*.wav
+!data/sample_audio/*.wav
+
+# Generated
+*.png
+*.jpg
+!docs/images/*
+
+# Logs
+*.log
