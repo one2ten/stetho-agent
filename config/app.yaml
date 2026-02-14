@@ -1,0 +1,60 @@
+# 애플리케이션 일반 설정
+app:
+  name: "StethoAgent"
+  version: "0.1.0"
+  description: "AI 기반 건강 가이드 프로토타입"
+  language: "ko"
+
+# Streamlit 설정
+streamlit:
+  page_title: "StethoAgent - AI 건강 가이드"
+  page_icon: "🩺"
+  layout: "wide"
+  theme:
+    primary_color: "#1E88E5"
+    background_color: "#FAFAFA"
+
+# 사용자 모드
+user_modes:
+  general:
+    label: "일반 사용자"
+    description: "쉬운 한국어로 건강 가이드 제공"
+  professional:
+    label: "의료 전문가"
+    description: "전문 용어를 사용한 진단 보조 리포트"
+
+# 면책 조항
+disclaimer: "⚠️ 본 분석 결과는 AI 기반 참고 정보이며 의료 진단이 아닙니다. 정확한 진단은 반드시 의료 전문가와 상담하세요."
+
+# 증상 옵션 (폐/심장 관련)
+symptoms:
+  options:
+    - "기침"
+    - "가래"
+    - "호흡곤란"
+    - "천명음(쌕쌕거림)"
+    - "가슴 통증"
+    - "가슴 압박감"
+    - "심계항진(두근거림)"
+    - "객혈(피 섞인 가래)"
+    - "야간 호흡곤란"
+    - "운동 시 숨참"
+    - "발열"
+    - "피로감"
+  duration_options:
+    - "1-2일"
+    - "3-7일"
+    - "1-2주"
+    - "2주 이상"
+    - "1개월 이상"
+  severity_options:
+    - "경미"
+    - "중간"
+    - "심함"
+    - "매우 심함"
+
+# 오디오 업로드 제한
+audio:
+  allowed_extensions: [".wav"]
+  max_file_size_mb: 10
+  max_duration_seconds: 30

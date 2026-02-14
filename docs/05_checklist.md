@@ -7,58 +7,58 @@
 ## Day 1: 프로젝트 초기화 + 기반 구축
 
 ### 프로젝트 구조
-- [ ] 전체 디렉토리 구조 생성 (`app/`, `agents/`, `models/`, `schemas/`, `config/`, `utils/`, `tests/`, `prompts/`, `data/`)
-- [ ] 모든 디렉토리에 `__init__.py` 생성
-- [ ] `.gitignore` 작성
+- [x] 전체 디렉토리 구조 생성 (`app/`, `agents/`, `models/`, `schemas/`, `config/`, `utils/`, `tests/`, `prompts/`, `data/`)
+- [x] 모든 디렉토리에 `__init__.py` 생성
+- [x] `.gitignore` 작성
 
 ### 환경 설정 파일
-- [ ] `environment.yml` 작성 (conda 환경 정의)
-- [ ] `pyproject.toml` 작성 (프로젝트 메타데이터 + 의존성)
-- [ ] `.env.example` 작성 (환경 변수 템플릿)
-- [ ] `setup_mac.sh` 작성 (원커맨드 셋업 스크립트)
+- [x] `environment.yml` 작성 (conda 환경 정의)
+- [x] `pyproject.toml` 작성 (프로젝트 메타데이터 + 의존성)
+- [x] `.env.example` 작성 (환경 변수 템플릿)
+- [x] `setup_mac.sh` 작성 (원커맨드 셋업 스크립트)
 
 ### 환경 구축
-- [ ] conda 환경 생성 (`conda env create -f environment.yml`)
-- [ ] 환경 활성화 확인 (`conda activate stetho-agent`)
-- [ ] 모든 의존성 임포트 확인
+- [x] conda 환경 생성 (`conda env create -f environment.yml`)
+- [x] 환경 활성화 확인 (`conda activate stetho-agent`)
+- [x] 모든 의존성 임포트 확인
 
 ### Ollama 설정
-- [ ] Ollama 설치 (`brew install ollama`)
-- [ ] Ollama 서버 시작 (`ollama serve`)
-- [ ] `qwen3:8b` 모델 다운로드 (`ollama pull qwen3:8b`)
-- [ ] 한국어 응답 확인 (`ollama run qwen3:8b "안녕하세요"`)
+- [x] Ollama 설치 (0.16.1 업데이트 완료)
+- [x] Ollama 서버 시작 (`ollama serve`)
+- [x] `qwen3:8b` 모델 다운로드 (`ollama pull qwen3:8b`)
+- [x] 한국어 응답 확인 (`ollama run qwen3:8b "안녕하세요"`)
 
 ### Config 파일 (YAML)
-- [ ] `config/llm.yaml` 작성
-- [ ] `config/ast_model.yaml` 작성
-- [ ] `config/vitals_reference.yaml` 작성
-- [ ] `config/app.yaml` 작성
+- [x] `config/llm.yaml` 작성
+- [x] `config/ast_model.yaml` 작성
+- [x] `config/vitals_reference.yaml` 작성
+- [x] `config/app.yaml` 작성
 
 ### Pydantic 스키마
-- [ ] `schemas/__init__.py` 작성
-- [ ] `schemas/vitals.py` — `VitalSigns` 모델 (디폴트: HR=75, BP=120/80, Temp=36.5)
-- [ ] `schemas/symptoms.py` — `SymptomInput` 모델 (디폴트: 기침/호흡곤란)
-- [ ] `schemas/auscultation.py` — `AuscultationResult` 모델
-- [ ] `schemas/report.py` — `RiskAssessment`, `AnalysisReport` 모델
+- [x] `schemas/__init__.py` 작성
+- [x] `schemas/vitals.py` — `VitalSigns` 모델 (디폴트: HR=75, BP=120/80, Temp=36.5)
+- [x] `schemas/symptoms.py` — `SymptomInput` 모델 (폐/심장 관련 증상 12개, 자유텍스트 디폴트 포함)
+- [x] `schemas/auscultation.py` — `AuscultationResult` 모델
+- [x] `schemas/report.py` — `RiskAssessment`, `AnalysisReport` 모델
 
 ### 유틸리티
-- [ ] `utils/device_utils.py` — MPS/CPU 자동 감지
-- [ ] `utils/config_loader.py` — YAML 설정 로더
+- [x] `utils/device_utils.py` — MPS/CPU 자동 감지
+- [x] `utils/config_loader.py` — YAML 설정 로더
 
 ### 테스트 (Day 1)
-- [ ] `tests/conftest.py` — pytest 공통 픽스처
-- [ ] `tests/test_schemas.py` — 스키마 디폴트 값, 유효성 검사 테스트
-- [ ] `tests/test_config.py` — Config 로딩 테스트
-- [ ] `tests/test_device.py` — 디바이스 감지 테스트
+- [x] `tests/conftest.py` — pytest 공통 픽스처
+- [x] `tests/test_schemas.py` — 스키마 디폴트 값, 유효성 검사 테스트 (44 passed)
+- [x] `tests/test_config.py` — Config 로딩 테스트
+- [x] `tests/test_device.py` — 디바이스 감지 테스트
 
 ### Day 1 확인 테스트
-- [ ] `conda activate stetho-agent` → 환경 활성화 성공
-- [ ] `ollama run qwen3:8b "안녕하세요"` → 한국어 응답
-- [ ] `python -c "import torch; print(torch.backends.mps.is_available())"` → `True`
-- [ ] `python -c "from schemas.vitals import VitalSigns; print(VitalSigns())"` → 디폴트 값 출력
-- [ ] `pytest tests/test_schemas.py -v` → PASSED
-- [ ] `pytest tests/test_config.py -v` → PASSED
-- [ ] `pytest tests/test_device.py -v` → PASSED
+- [x] `conda activate stetho-agent` → 환경 활성화 성공
+- [x] `ollama run qwen3:8b "안녕하세요"` → 한국어 응답
+- [x] `python -c "import torch; print(torch.backends.mps.is_available())"` → `True`
+- [x] `python -c "from schemas.vitals import VitalSigns; print(VitalSigns())"` → 디폴트 값 출력
+- [x] `pytest tests/test_schemas.py -v` → PASSED
+- [x] `pytest tests/test_config.py -v` → PASSED
+- [x] `pytest tests/test_device.py -v` → PASSED
 
 ---
 

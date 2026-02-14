@@ -1,0 +1,36 @@
+# AST 청진음 분류 모델 설정
+model:
+  name: "MIT/ast-finetuned-audioset-10-10-0.4593"
+  cache_dir: null                      # null이면 기본 HuggingFace 캐시 사용
+
+# 분류 클래스 매핑 (AudioSet → 청진음)
+classes:
+  - name: "Normal"
+    description: "정상 폐음"
+    label_ids: []
+  - name: "Murmur"
+    description: "심잡음"
+    label_ids: []
+  - name: "Extrahls"
+    description: "이상 심음"
+    label_ids: []
+  - name: "Artifact"
+    description: "잡음/노이즈"
+    label_ids: []
+  - name: "Extrastole"
+    description: "기외수축"
+    label_ids: []
+
+# 오디오 전처리 설정
+audio:
+  sample_rate: 16000                   # 목표 샘플링 레이트
+  max_duration: 30                     # 최대 길이 (초)
+  mono: true                           # 모노 변환 여부
+  normalize: true                      # 정규화 여부
+
+# 디바이스 설정
+device:
+  prefer_mps: true                     # MPS 우선 사용
+  fallback_cpu: true                   # CPU 폴백 허용
+  env:
+    PYTORCH_ENABLE_MPS_FALLBACK: "1"   # MPS 폴백 환경변수

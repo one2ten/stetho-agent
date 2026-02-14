@@ -1,0 +1,22 @@
+name: stetho-agent
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+    - streamlit>=1.40
+    - langchain>=0.3
+    - langchain-ollama>=0.2
+    - langgraph>=0.2
+    - torch>=2.2
+    - transformers>=4.40
+    - librosa>=0.10
+    - soundfile>=0.12
+    - plotly>=5.20
+    - pydantic>=2.0
+    - pyyaml>=6.0
+    - python-dotenv>=1.0
+    - pytest>=8.0
+    - pytest-asyncio>=0.23

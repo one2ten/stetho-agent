@@ -1,0 +1,67 @@
+# 생체신호 정상 범위 기준
+heart_rate:
+  unit: "bpm"
+  normal:
+    min: 60
+    max: 100
+  warning:
+    low: 50
+    high: 110
+  critical:
+    low: 40
+    high: 150
+  default: 75
+
+blood_pressure:
+  unit: "mmHg"
+  systolic:
+    normal:
+      min: 90
+      max: 120
+    elevated:
+      min: 120
+      max: 129
+    high_stage1:
+      min: 130
+      max: 139
+    high_stage2:
+      min: 140
+      max: 180
+    crisis:
+      min: 180
+    default: 120
+  diastolic:
+    normal:
+      min: 60
+      max: 80
+    elevated:
+      max: 80
+    high_stage1:
+      min: 80
+      max: 89
+    high_stage2:
+      min: 90
+      max: 120
+    crisis:
+      min: 120
+    default: 80
+
+body_temperature:
+  unit: "°C"
+  normal:
+    min: 36.1
+    max: 37.2
+  low_grade_fever:
+    min: 37.3
+    max: 38.0
+  fever:
+    min: 38.1
+    max: 39.0
+  high_fever:
+    min: 39.1
+    max: 41.0
+  critical:
+    min: 41.1
+  hypothermia:
+    max: 35.0
+  default: 36.5

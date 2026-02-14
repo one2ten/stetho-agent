@@ -1,0 +1,15 @@
+# LLM 모델 설정
+ollama:
+  model: "qwen3:8b"                    # Ollama 모델명 (교체 가능)
+  base_url: "http://localhost:11434"   # Ollama 서버 URL
+  temperature: 0.7                     # 생성 온도 (0.0-1.0)
+  top_p: 0.9                           # Top-p 샘플링
+  timeout: 120                         # 요청 타임아웃 (초)
+  max_retries: 3                       # 최대 재시도 횟수
+  streaming: false                     # 스트리밍 모드
+
+# 대체 모델 설정 (주석 해제하여 사용)
+# ollama:
+#   model: "exaone3.5:7.8b"            # LG AI 한국어 특화
+#   model: "qwen3:4b"                  # 경량 (8GB Mac)
+#   model: "qwen3:30b-a3b"            # 고성능 (32GB+ Mac)
