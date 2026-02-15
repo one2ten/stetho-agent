@@ -125,9 +125,12 @@ class TestAuscultationResult:
             )
 
     def test_분류_클래스_목록(self):
-        """분류 클래스 5개 확인"""
-        assert len(AUSCULTATION_CLASSES) == 5
+        """분류 클래스 4개 확인 (Normal, Crackle, Wheeze, Both)"""
+        assert len(AUSCULTATION_CLASSES) == 4
         assert "Normal" in AUSCULTATION_CLASSES
+        assert "Crackle" in AUSCULTATION_CLASSES
+        assert "Wheeze" in AUSCULTATION_CLASSES
+        assert "Both" in AUSCULTATION_CLASSES
 
     def test_스펙트로그램_경로_기본값(self, sample_auscultation):
         """스펙트로그램 경로 기본값 None 확인"""

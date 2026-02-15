@@ -36,6 +36,9 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+    "slow: 느린 테스트 (모델 로딩, 서버 연결 등)",
+]
 
 [tool.ruff]
 line-length = 100

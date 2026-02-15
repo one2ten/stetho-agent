@@ -30,10 +30,9 @@ def sample_auscultation() -> AuscultationResult:
         confidence=0.85,
         probabilities={
             "Normal": 0.85,
-            "Murmur": 0.07,
-            "Extrahls": 0.04,
-            "Artifact": 0.02,
-            "Extrastole": 0.02,
+            "Crackle": 0.08,
+            "Wheeze": 0.05,
+            "Both": 0.02,
         },
     )
 

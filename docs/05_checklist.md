@@ -65,56 +65,56 @@
 ## Day 2: 핵심 모델 레이어
 
 ### 오디오 전처리
-- [ ] `models/audio_preprocessor.py` — AudioPreprocessor 클래스
-  - [ ] .wav 로딩 (librosa)
-  - [ ] 16kHz 리샘플링
-  - [ ] 모노 변환
-  - [ ] 최대 30초 트리밍
-  - [ ] Mel Spectrogram 생성 및 이미지 저장
-  - [ ] 오디오 유효성 검사
+- [x] `models/audio_preprocessor.py` — AudioPreprocessor 클래스
+  - [x] .wav 로딩 (librosa)
+  - [x] 16kHz 리샘플링
+  - [x] 모노 변환
+  - [x] 최대 30초 트리밍
+  - [x] Mel Spectrogram 생성 및 이미지 저장
+  - [x] 오디오 유효성 검사
 
 ### AST 청진음 분류기
-- [ ] `models/ast_classifier.py` — ASTClassifier 클래스
-  - [ ] HuggingFace 모델 로딩 (`MIT/ast-finetuned-audioset-10-10-0.4593`)
-  - [ ] MPS 디바이스 배치 (폴백: CPU)
-  - [ ] 오디오 → 피처 추출 → 추론 파이프라인
-  - [ ] 5-class 확률 반환 (Normal, Murmur, Extrahls, Artifact, Extrastole)
-  - [ ] `--test` CLI 모드 구현
+- [x] `models/ast_classifier.py` — ASTClassifier 클래스
+  - [x] HuggingFace 모델 로딩 (`MIT/ast-finetuned-audioset-10-10-0.4593`)
+  - [x] MPS 디바이스 배치 (폴백: CPU)
+  - [x] 오디오 → 피처 추출 → 추론 파이프라인
+  - [x] 4-class 확률 반환 (Normal, Crackle, Wheeze, Both)
+  - [x] `--test` CLI 모드 구현
 
 ### 샘플 데이터
-- [ ] `data/sample_audio/sample.wav` — 테스트용 오디오 파일 준비
-- [ ] (옵션) 합성 테스트 오디오 생성 스크립트
+- [x] `sample/sample.wav` — 테스트용 오디오 파일 (4kHz, 모노, 15초)
 
 ### LLM 클라이언트
-- [ ] `models/llm_client.py` — LLMClient 클래스
-  - [ ] `config/llm.yaml` 기반 ChatOllama 초기화
-  - [ ] `generate()` — 비스트리밍 텍스트 생성
-  - [ ] `stream()` — 스트리밍 생성
-  - [ ] `is_available()` — Ollama 서버 연결 확인
-  - [ ] 타임아웃/재시도 처리
-  - [ ] `--test` CLI 모드 구현
+- [x] `models/llm_client.py` — LLMClient 클래스
+  - [x] `config/llm.yaml` 기반 ChatOllama 초기화
+  - [x] `generate()` — 비스트리밍 텍스트 생성
+  - [x] `stream()` — 스트리밍 생성
+  - [x] `is_available()` — Ollama 서버 연결 확인
+  - [x] 타임아웃/재시도 처리
+  - [x] `--test` CLI 모드 구현
 
 ### 시각화 유틸리티
-- [ ] `utils/visualization.py`
-  - [ ] `create_vitals_gauges()` — 생체신호 Plotly 게이지 차트
-  - [ ] `create_classification_bar_chart()` — 분류 확률 바 차트
-  - [ ] `create_risk_indicator()` — 위험도 인디케이터
+- [x] `utils/visualization.py`
+  - [x] `create_vitals_gauges()` — 생체신호 Plotly 게이지 차트
+  - [x] `create_classification_bar_chart()` — 분류 확률 바 차트
+  - [x] `create_risk_indicator()` — 위험도 인디케이터
 
 ### 오디오 유틸리티
-- [ ] `utils/audio_utils.py` — 오디오 파일 검증, 메타데이터 추출
+- [x] `utils/audio_utils.py` — 오디오 파일 검증, 메타데이터 추출
 
 ### 테스트 (Day 2)
-- [ ] `tests/test_audio_preprocessor.py` — 전처리 파이프라인 테스트
-- [ ] `tests/test_ast_classifier.py` — AST 분류기 테스트
-- [ ] `tests/test_llm_client.py` — LLM 클라이언트 테스트
+- [x] `tests/test_audio_preprocessor.py` — 전처리 파이프라인 테스트 (14 passed)
+- [x] `tests/test_ast_classifier.py` — AST 분류기 테스트 (7 passed)
+- [x] `tests/test_llm_client.py` — LLM 클라이언트 테스트 (8 passed)
 
 ### Day 2 확인 테스트
-- [ ] `python -m models.audio_preprocessor --test` → Mel Spectrogram 이미지 생성
-- [ ] `python -m models.ast_classifier --test` → 5개 클래스별 확률 출력
-- [ ] `python -m models.llm_client --test` → 한국어 응답 수신
-- [ ] `pytest tests/test_ast_classifier.py -v` → PASSED
-- [ ] `pytest tests/test_llm_client.py -v` → PASSED
-- [ ] `pytest tests/test_audio_preprocessor.py -v` → PASSED
+- [x] `python -m models.audio_preprocessor --test` → Mel Spectrogram 이미지 생성 완료
+- [x] `python -m models.ast_classifier --test` → 4개 클래스별 확률 출력 (Normal 70.47%, Wheeze 24.74%, Crackle 3.19%, Both 1.60%)
+- [x] `python -m models.llm_client --test` → 한국어 응답 수신 완료
+- [x] `pytest tests/test_ast_classifier.py -v` → 7 PASSED
+- [x] `pytest tests/test_llm_client.py -v` → 8 PASSED
+- [x] `pytest tests/test_audio_preprocessor.py -v` → 14 PASSED
+- [x] `pytest tests/ -v` → 전체 73 PASSED
 
 ---
 

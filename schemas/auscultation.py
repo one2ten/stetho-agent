@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 AUSCULTATION_CLASSES: list[str] = [
-    "Normal", "Murmur", "Extrahls", "Artifact", "Extrastole",
+    "Normal", "Crackle", "Wheeze", "Both",
 ]
 
 

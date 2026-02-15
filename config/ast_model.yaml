@@ -3,22 +3,19 @@ model:
   name: "MIT/ast-finetuned-audioset-10-10-0.4593"
   cache_dir: null                      # null이면 기본 HuggingFace 캐시 사용
 
-# 분류 클래스 매핑 (AudioSet → 청진음)
+# 분류 클래스 매핑 (폐 청진음 4-class)
 classes:
   - name: "Normal"
     description: "정상 폐음"
     label_ids: []
-  - name: "Murmur"
-    description: "심잡음"
+  - name: "Crackle"
+    description: "수포음 (크래클)"
     label_ids: []
-  - name: "Extrahls"
-    description: "이상 심음"
+  - name: "Wheeze"
+    description: "천명음 (위즈)"
     label_ids: []
-  - name: "Artifact"
-    description: "잡음/노이즈"
-    label_ids: []
-  - name: "Extrastole"
-    description: "기외수축"
+  - name: "Both"
+    description: "수포음 + 천명음 동시"
     label_ids: []
 
 # 오디오 전처리 설정
