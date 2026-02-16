@@ -7,6 +7,7 @@ ollama:
   timeout: 120                         # 요청 타임아웃 (초)
   max_retries: 3                       # 최대 재시도 횟수
   streaming: false                     # 스트리밍 모드
+  num_parallel: 4                      # Ollama 동시 요청 처리 수 (OLLAMA_NUM_PARALLEL)
 
 # 대체 모델 설정 (주석 해제하여 사용)
 # ollama:

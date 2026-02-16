@@ -142,56 +142,57 @@
 ## Day 3: LangGraph 에이전트 + Streamlit UI
 
 ### 에이전트 상태
-- [ ] `agents/state.py` — `AgentState` TypedDict 정의
+- [x] `agents/state.py` — `AgentState` TypedDict 정의
 
 ### 분석 노드
-- [ ] `agents/nodes/__init__.py`
-- [ ] `agents/nodes/input_validator.py` — 입력 검증 노드
-- [ ] `agents/nodes/auscultation_node.py` — 청진음 분석 노드
-- [ ] `agents/nodes/vitals_node.py` — 생체신호 평가 노드
-- [ ] `agents/nodes/symptoms_node.py` — 증상 분석 노드
-- [ ] `agents/nodes/synthesis_node.py` — 종합 판단 노드
-- [ ] `agents/nodes/risk_node.py` — 위험도 평가 노드
-- [ ] `agents/nodes/recommendation_node.py` — 응답 생성 노드 (mode별 분기)
+- [x] `agents/nodes/__init__.py`
+- [x] `agents/nodes/input_validator.py` — 입력 검증 노드
+- [x] `agents/nodes/auscultation_node.py` — 청진음 분석 노드
+- [x] `agents/nodes/vitals_node.py` — 생체신호 평가 노드
+- [x] `agents/nodes/symptoms_node.py` — 증상 분석 노드
+- [x] `agents/nodes/synthesis_node.py` — 종합 판단 노드 (문헌 검색 통합)
+- [x] `agents/nodes/risk_node.py` — 위험도 평가 노드
+- [x] `agents/nodes/recommendation_node.py` — 응답 생성 노드 (mode별 분기)
 
 ### 라우팅 엣지
-- [ ] `agents/edges/__init__.py`
-- [ ] `agents/edges/risk_router.py` — 위험도 기반 조건부 라우팅
+- [x] `agents/edges/__init__.py`
+- [x] `agents/edges/risk_router.py` — 위험도 기반 조건부 라우팅
 
 ### LangGraph 그래프
-- [ ] `agents/graph.py` — 그래프 정의 + 컴파일
-  - [ ] 입력 검증 → 병렬(3개 분석) → 종합 → 위험도 → 응답 워크플로우
-  - [ ] `--test` CLI 모드 구현
+- [x] `agents/graph.py` — 그래프 정의 + 컴파일
+  - [x] 입력 검증 → 병렬(3개 분석) → 종합 → 위험도 → 응답 워크플로우
+  - [x] `--test` CLI 모드 구현
 
 ### LLM 프롬프트 템플릿
-- [ ] `prompts/auscultation_analysis.md`
-- [ ] `prompts/vitals_evaluation.md`
-- [ ] `prompts/symptom_analysis.md`
-- [ ] `prompts/synthesis.md`
-- [ ] `prompts/recommendation_general.md`
-- [ ] `prompts/recommendation_professional.md`
+- [x] `prompts/auscultation_analysis.md`
+- [x] `prompts/vitals_evaluation.md`
+- [x] `prompts/symptom_analysis.md`
+- [x] `prompts/synthesis.md`
+- [x] `prompts/recommendation_general.md`
+- [x] `prompts/recommendation_professional.md`
 
 ### Streamlit UI
-- [ ] `app/main.py` — 메인 페이지
-  - [ ] 사이드바: 모드 선택 (일반/의료진), 면책 조항
-  - [ ] 메인 영역: 입력 + 결과 탭
-  - [ ] "분석 시작" 버튼
-- [ ] `app/components/audio_uploader.py` — 청진음 업로드 UI
-- [ ] `app/components/vitals_input.py` — 생체신호 입력 UI (디폴트 채워짐)
-- [ ] `app/components/symptom_input.py` — 증상 입력 UI (디폴트 채워짐)
-- [ ] `app/components/result_dashboard.py` — 결과 대시보드 뼈대
+- [x] `app/main.py` — 메인 페이지
+  - [x] 사이드바: 모드 선택 (일반/의료진), 면책 조항
+  - [x] 메인 영역: 입력 + 결과 탭
+  - [x] "분석 시작" 버튼
+- [x] `app/components/audio_uploader.py` — 청진음 업로드 UI
+- [x] `app/components/vitals_input.py` — 생체신호 입력 UI (디폴트 채워짐)
+- [x] `app/components/symptom_input.py` — 증상 입력 UI (디폴트 채워짐)
+- [x] `app/components/result_dashboard.py` — 결과 대시보드 (Plotly 차트 + 텍스트 + 문헌)
 
 ### 테스트 (Day 3)
-- [ ] `tests/test_agent_graph.py` — 워크플로우 실행 테스트
-- [ ] `tests/test_nodes.py` — 각 노드 단위 테스트
+- [x] `tests/test_agent_graph.py` — 워크플로우 실행 테스트 (6 passed)
+- [x] `tests/test_nodes.py` — 각 노드 단위 테스트 (20 passed)
 
 ### Day 3 확인 테스트
-- [ ] `python -m agents.graph --test` → 디폴트 입력으로 전체 워크플로우 실행, 최종 응답 출력
+- [x] `python -m agents.graph --test` → 디폴트 입력으로 전체 워크플로우 실행, 최종 응답 출력
 - [ ] `streamlit run app/main.py` → 브라우저에서 UI 렌더링
 - [ ] UI에서 디폴트 값 채워진 상태 확인
 - [ ] "분석 시작" 클릭 → 결과 표시
-- [ ] `pytest tests/test_agent_graph.py -v` → PASSED
-- [ ] `pytest tests/test_nodes.py -v` → PASSED
+- [x] `pytest tests/test_agent_graph.py -v` → 6 PASSED
+- [x] `pytest tests/test_nodes.py -v` → 20 PASSED
+- [x] `pytest tests/ -v` → 전체 134 PASSED (회귀 없음)
 
 ---
 

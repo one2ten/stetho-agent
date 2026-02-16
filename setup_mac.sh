@@ -46,7 +46,11 @@ if ! command -v ollama &> /dev/null; then
 fi
 echo "[✓] Ollama 확인 완료"
 
-# 6. Ollama 서버 시작
+# 6. Ollama 병렬 처리 설정 + 서버 시작
+launchctl setenv OLLAMA_NUM_PARALLEL 4 2>/dev/null || true
+export OLLAMA_NUM_PARALLEL=4
+echo "[✓] Ollama 병렬 처리 설정: OLLAMA_NUM_PARALLEL=4"
+
 if ! curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
     echo "[시작] Ollama 서버 시작 중..."
     ollama serve &
