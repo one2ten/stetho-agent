@@ -7,6 +7,7 @@ from schemas.vitals import VitalSigns
 from schemas.symptoms import SymptomInput
 from schemas.auscultation import AuscultationResult
 from schemas.report import RiskAssessment, AnalysisReport
+from schemas.literature import MedicalReference, LiteratureSearchResult
 
 
 @pytest.fixture
@@ -34,6 +35,39 @@ def sample_auscultation() -> AuscultationResult:
             "Wheeze": 0.05,
             "Both": 0.02,
         },
+    )
+
+
+@pytest.fixture
+def sample_literature_result() -> LiteratureSearchResult:
+    """샘플 문헌 검색 결과 픽스처"""
+    return LiteratureSearchResult(
+        query="pulmonary crackles cough dyspnea",
+        total_count=2,
+        references=[
+            MedicalReference(
+                source="pubmed",
+                source_id="12345678",
+                title="Lung Crackles: Classification and Clinical Significance",
+                authors=["Smith J", "Kim S"],
+                journal="Respiratory Medicine",
+                year="2023",
+                url="https://pubmed.ncbi.nlm.nih.gov/12345678/",
+                relevance_score=1.0,
+            ),
+            MedicalReference(
+                source="pubmed",
+                source_id="87654321",
+                title="Auscultation Findings and Pulmonary Function",
+                authors=["Lee Y", "Park J", "Choi H"],
+                journal="Chest",
+                year="2024",
+                url="https://pubmed.ncbi.nlm.nih.gov/87654321/",
+                relevance_score=0.75,
+            ),
+        ],
+        sources_used=["pubmed"],
+        search_successful=True,
     )
 
 

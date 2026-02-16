@@ -5,6 +5,7 @@ from schemas.vitals import VitalSigns
 from schemas.symptoms import SymptomInput, SYMPTOM_OPTIONS, DURATION_OPTIONS, SEVERITY_OPTIONS
 from schemas.auscultation import AuscultationResult, AUSCULTATION_CLASSES
 from schemas.report import RiskAssessment, AnalysisReport
+from schemas.literature import MedicalReference, LiteratureSearchResult
 
 __all__ = [
     "VitalSigns",
@@ -16,4 +17,6 @@ __all__ = [
     "AUSCULTATION_CLASSES",
     "RiskAssessment",
     "AnalysisReport",
+    "MedicalReference",
+    "LiteratureSearchResult",
 ]

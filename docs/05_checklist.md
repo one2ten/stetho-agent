@@ -116,6 +116,27 @@
 - [x] `pytest tests/test_audio_preprocessor.py -v` → 14 PASSED
 - [x] `pytest tests/ -v` → 전체 73 PASSED
 
+### 의학 문헌 검색 (통합 인터페이스 + PubMed)
+- [x] `config/literature.yaml` — 문헌 검색 설정 (활성 소스, PubMed API, 쿼리 매핑)
+- [x] `schemas/literature.py` — MedicalReference, LiteratureSearchResult 스키마 (소스 무관 통합 포맷)
+- [x] `schemas/report.py` — AnalysisReport에 `literature_references` 필드 추가
+- [x] `schemas/__init__.py` — 새 스키마 export 추가
+- [x] `models/literature_search.py` — MedicalSearchClient 통합 클라이언트
+  - [x] `BaseMedicalSearchProvider` 추상 인터페이스 (새 소스 확장용)
+  - [x] `PubMedProvider` — ESearch + ESummary 2단계 검색
+  - [x] `PROVIDER_REGISTRY` — 프로바이더 등록 레지스트리
+  - [x] `build_search_query()` — 분석 결과(청진음+증상+생체신호) → 영문 검색 쿼리 변환
+  - [x] `search()` / `search_from_analysis()` — 모든 활성 소스 통합 검색
+  - [x] `format_references_for_llm()` — LLM 프롬프트용 포맷팅
+  - [x] `format_references_for_display()` — UI 표시용 포맷팅
+  - [x] `--test` CLI 모드 (실제 PubMed 검색 확인)
+- [x] `utils/config_loader.py` — `get_literature_config()` 편의 함수 추가
+- [x] `.env.example` — `NCBI_API_KEY` 항목 추가
+- [x] `tests/conftest.py` — `sample_literature_result` 픽스처 추가
+- [x] `tests/test_literature_search.py` — 35개 테스트 (스키마, config, 쿼리 빌드, 포맷팅, 모킹 검색, 통합)
+- [x] `docs/todo.md` — 미래 의료 에이전트 통합 계획 문서
+- [x] `pytest tests/ -v` → 전체 108 PASSED
+
 ---
 
 ## Day 3: LangGraph 에이전트 + Streamlit UI

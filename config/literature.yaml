@@ -1,0 +1,61 @@
+# 의학 문헌 검색 설정
+
+# 활성 검색 소스 (여러 소스 활성화 가능)
+active_sources:
+  - "pubmed"
+  # - "pmc"              # 향후 확장: PMC Open Access 전문 검색
+  # - "google_scholar"   # 향후 확장: Google Scholar
+
+# 공통 설정
+common:
+  max_results_per_source: 5         # 소스당 최대 결과 수
+  timeout: 15                       # HTTP 요청 타임아웃 (초)
+  max_retries: 2                    # 최대 재시도 횟수
+
+# PubMed E-utilities 설정
+pubmed:
+  base_url: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+  min_year: 2019                    # 최소 출판 연도 필터
+  language: "english"               # 검색 언어 필터
+  sort: "relevance"                 # 정렬 기준 (relevance | date)
+  url_template: "https://pubmed.ncbi.nlm.nih.gov/{id}/"
+
+# PMC Open Access 설정 (향후 확장)
+# pmc:
+#   base_url: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
+#   database: "pmc"
+#   open_access_only: true
+#   url_template: "https://www.ncbi.nlm.nih.gov/pmc/articles/{id}/"
+
+# 검색 쿼리 매핑 (분석 결과 → 영문 검색어)
+query_mapping:
+  # 청진음 분류 → 검색어
+  auscultation:
+    Normal: "normal lung sounds auscultation"
+    Crackle: "pulmonary crackles lung sounds diagnosis"
+    Wheeze: "wheezing respiratory sounds diagnosis"
+    Both: "crackles wheezing lung sounds combined diagnosis"
+
+  # 한국어 증상 → 영문 검색어
+  symptoms:
+    기침: "cough"
+    가래: "sputum"
+    호흡곤란: "dyspnea"
+    "천명음(쌕쌕거림)": "wheezing"
+    가슴 통증: "chest pain"
+    가슴 압박감: "chest tightness"
+    "심계항진(두근거림)": "palpitations"
+    "객혈(피 섞인 가래)": "hemoptysis"
+    야간 호흡곤란: "paroxysmal nocturnal dyspnea"
+    운동 시 숨참: "exertional dyspnea"
+    발열: "fever"
+    피로감: "fatigue"
+
+  # 생체신호 이상 → 검색어
+  vitals:
+    tachycardia: "tachycardia"
+    bradycardia: "bradycardia"
+    hypertension: "hypertension"
+    hypotension: "hypotension"
+    fever: "fever"
+    hypothermia: "hypothermia"

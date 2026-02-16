@@ -55,3 +55,8 @@ def get_vitals_reference() -> dict:
 def get_app_config() -> dict:
     """앱 일반 설정 로딩 (편의 함수)"""
     return load_config("app")
+
+
+def get_literature_config() -> dict:
+    """의학 문헌 검색 설정 로딩 (편의 함수)"""
+    return load_config("literature")

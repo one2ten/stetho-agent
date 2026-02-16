@@ -38,5 +38,15 @@ class AnalysisReport(BaseModel):
     risk_assessment: Optional[RiskAssessment] = None
     synthesis: Optional[str] = None
     recommendation: Optional[str] = None
+    literature_references: Optional["LiteratureSearchResult"] = Field(
+        default=None,
+        description="PubMed 의학 문헌 검색 결과",
+    )
     user_mode: Literal["general", "professional"] = "general"
     disclaimer: str = "⚠️ 본 분석 결과는 AI 기반 참고 정보이며 의료 진단이 아닙니다."
+
+
+# 순환 참조 방지를 위한 지연 임포트
+from schemas.literature import LiteratureSearchResult  # noqa: E402
+
+AnalysisReport.model_rebuild()
