@@ -11,6 +11,7 @@ from models.literature_search import MedicalSearchClient
 from schemas.auscultation import AuscultationResult
 from schemas.literature import LiteratureSearchResult
 from schemas.report import RiskAssessment
+from utils.config_loader import get_app_config
 from utils.visualization import (
     create_classification_bar_chart,
     create_risk_indicator,
@@ -27,6 +28,12 @@ def render_result_dashboard(result: AgentState) -> None:
     Args:
         result: 워크플로우 실행 완료된 AgentState
     """
+    # === 면책 조항 ===
+    config = get_app_config()
+    disclaimer = config.get("disclaimer", "")
+    if disclaimer:
+        st.warning(disclaimer)
+
     # === 위험도 인디케이터 ===
     risk: Optional[RiskAssessment] = result.get("risk_assessment")
     if risk:
@@ -45,6 +52,11 @@ def render_result_dashboard(result: AgentState) -> None:
     # === 상세 분석 (접기) ===
     with st.expander("상세 분석 보기", expanded=False):
         _render_detail_tabs(result)
+
+    # === 추론 과정 (CoT/ReAct) ===
+    reasoning_trace = result.get("reasoning_trace")
+    if reasoning_trace:
+        _render_reasoning_trace(reasoning_trace)
 
     # === 참고 문헌 ===
     literature: Optional[LiteratureSearchResult] = result.get("literature_references")
@@ -111,6 +123,9 @@ def _render_detail_tabs(result: AgentState) -> None:
         if auscultation:
             fig = create_classification_bar_chart(auscultation.probabilities)
             st.plotly_chart(fig, use_container_width=True)
+            # 스펙트로그램 표시
+            if auscultation.spectrogram_path:
+                st.image(auscultation.spectrogram_path, caption="Mel Spectrogram")
         analysis = result.get("auscultation_analysis", "")
         if analysis:
             st.markdown(analysis)
@@ -120,6 +135,25 @@ def _render_detail_tabs(result: AgentState) -> None:
         synthesis = result.get("synthesis", "")
         if synthesis:
             st.markdown(synthesis)
+
+
+def _render_reasoning_trace(trace: list[str]) -> None:
+    """CoT/ReAct 추론 과정 표시"""
+    with st.expander("AI 추론 과정 보기 (CoT/ReAct)", expanded=False):
+        for step in trace:
+            # 태그에 따라 아이콘 적용
+            if step.startswith("[사고]"):
+                st.markdown(f"🧠 {step}")
+            elif step.startswith("[행동]"):
+                st.markdown(f"⚡ {step}")
+            elif step.startswith("[관찰]"):
+                st.markdown(f"👁️ {step}")
+            elif step.startswith("[결론]"):
+                st.markdown(f"✅ {step}")
+            elif step.startswith("[오류]"):
+                st.markdown(f"❌ {step}")
+            else:
+                st.markdown(f"📝 {step}")
 
 
 def _render_literature_section(literature: LiteratureSearchResult) -> None:

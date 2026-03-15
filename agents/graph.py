@@ -73,7 +73,6 @@ graph = build_graph().compile()
 
 if __name__ == "__main__":
     import argparse
-    import json
 
     parser = argparse.ArgumentParser(description="StethoAgent 워크플로우 테스트")
     parser.add_argument("--test", action="store_true", help="디폴트 입력으로 워크플로우 실행")
@@ -95,7 +94,7 @@ if __name__ == "__main__":
             "user_mode": "general",
         }
 
-        print(f"\n입력:")
+        print("\n입력:")
         print(f"  - 심박수: {input_state['vitals'].heart_rate}bpm")
         print(f"  - 혈압: {input_state['vitals'].blood_pressure_sys}/{input_state['vitals'].blood_pressure_dia}mmHg")
         print(f"  - 체온: {input_state['vitals'].body_temperature}°C")
@@ -114,7 +113,7 @@ if __name__ == "__main__":
 
             risk = result.get("risk_assessment")
             if risk:
-                print(f"--- 위험도 ---")
+                print("--- 위험도 ---")
                 print(f"  레벨: {risk.level}, 점수: {risk.score:.0f}, 즉시조치: {risk.immediate_action_needed}")
                 print(f"  요인: {', '.join(risk.factors)}\n")
 

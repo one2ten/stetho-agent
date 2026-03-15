@@ -136,12 +136,12 @@
 | 노드 | 파일 | 입력 | 출력 | 설명 |
 |------|------|------|------|------|
 | **입력 검증** | `nodes/input_validator.py` | 원시 입력 | 검증된 AgentState | Pydantic으로 입력 검증, 디폴트 값 채우기 |
-| **청진음 분석** | `nodes/auscultation_node.py` | `.wav` 파일 경로 | `auscultation_analysis: str` | AST 모델 분류 → LLM이 결과 해석 |
-| **생체신호 평가** | `nodes/vitals_node.py` | `VitalSigns` | `vitals_evaluation: str` | 정상 범위 비교 → LLM이 평가 |
-| **증상 분석** | `nodes/symptoms_node.py` | `SymptomInput` | `symptom_analysis: str` | 증상 조합 분석 → LLM이 해석 |
-| **종합 판단** | `nodes/synthesis_node.py` | 3개 분석 결과 | `synthesis: str` | 전체 소견 종합 |
-| **위험도 평가** | `nodes/risk_node.py` | 종합 소견 | `RiskAssessment` | 위험도 점수 + 레벨 산정 |
-| **응답 생성** | `nodes/recommendation_node.py` | 종합 + 위험도 + user_mode | `recommendation: str` | 최종 건강 가이드 생성 |
+| **청진음 분석** | `nodes/auscultation_node.py` | `.wav` 파일 경로 | `auscultation_analysis: str` | AST 모델 분류 → LLM CoT 해석 |
+| **생체신호 평가** | `nodes/vitals_node.py` | `VitalSigns` | `vitals_evaluation: str` | 정상 범위 비교 → LLM CoT 평가 |
+| **증상 분석** | `nodes/symptoms_node.py` | `SymptomInput` | `symptom_analysis: str` | 증상 조합 → LLM CoT 분석 |
+| **종합 판단** | `nodes/synthesis_node.py` | 3개 분석 결과 | `synthesis: str`, `reasoning_trace: list` | ReAct 패턴 종합 + 문헌 검색 |
+| **위험도 평가** | `nodes/risk_node.py` | 종합 소견 | `RiskAssessment`, `reasoning_trace: list` | 휴리스틱 + LLM CoT 하이브리드 |
+| **응답 생성** | `nodes/recommendation_node.py` | 종합 + 위험도 + user_mode | `recommendation: str` | CoT 기반 최종 건강 가이드 생성 |
 
 ### 2.3 엣지 (라우팅) 설명
 
@@ -164,6 +164,67 @@ graph.add_edge(["auscultation_node", "vitals_node", "symptoms_node"], "synthesis
 - 3개 분석 노드는 독립적이므로 병렬 실행
 - 모든 분석 완료 후 종합 판단 노드로 합류
 - 청진음이 없는 경우(업로드 안 함) → 청진음 분석 노드 스킵
+
+### 2.5 CoT/ReAct 추론 패턴
+
+본 시스템은 두 가지 LLM 추론 패턴을 결합하여 투명하고 신뢰할 수 있는 분석을 제공합니다.
+
+#### Chain-of-Thought (CoT) — 단계별 추론
+
+모든 분석 노드의 LLM 프롬프트에 단계별 사고 과정을 명시합니다:
+
+```
+[1단계] 데이터 확인 및 핵심 소견 식별
+[2단계] 패턴 분석 및 임상적 의미 해석
+[3단계] 감별 진단 고려
+[4단계] 종합 판단 및 결론
+```
+
+적용 노드: `auscultation_node`, `vitals_node`, `symptoms_node`, `recommendation_node`
+
+#### ReAct (Reasoning + Acting) — 사고-행동-관찰 패턴
+
+종합 판단 노드(`synthesis_node`)에서 사용:
+
+```
+[사고] 3개 분석 결과의 핵심 소견 파악
+[행동] PubMed 의학 문헌 검색 실행
+[관찰] 검색 결과에서 관련 근거 확인
+[결론] 근거 기반 최종 종합 판단
+```
+
+#### 하이브리드 위험도 평가
+
+위험도 평가 노드(`risk_node`)는 두 방식을 병합합니다:
+
+```
+1단계: 휴리스틱 점수 (빠른 규칙 기반)
+  - 비정상 생체신호: +15점/항목
+  - 비정상 청진음: +20점
+  - 증상 강도(심함): +15점
+  - 키워드 분석: +5~10점
+
+2단계: LLM CoT 추론 (맥락 기반 보정)
+  - JSON 출력: {reasoning, level, factors, confidence}
+  - 위험 요인 간 상호작용 고려
+
+3단계: 병합
+  - LLM이 더 높은 위험도 제안 시 상향 조정
+  - 휴리스틱 점수를 기본으로 보수적 운영
+```
+
+#### 추론 추적 (reasoning_trace)
+
+`AgentState`에 `reasoning_trace: list[str]` 필드로 전체 추론 과정을 기록합니다.
+UI의 "AI 추론 과정 보기" 패널에서 아이콘과 함께 시각화됩니다:
+
+| 태그 | 아이콘 | 의미 |
+|------|--------|------|
+| `[사고]` | 🧠 | 분석/추론 단계 |
+| `[행동]` | ⚡ | 외부 도구 실행 (문헌 검색 등) |
+| `[관찰]` | 👁️ | 실행 결과 확인 |
+| `[결론]` | ✅ | 최종 판단 |
+| `[오류]` | ❌ | 에러 발생 |
 
 ---
 
@@ -207,7 +268,7 @@ graph.add_edge(["auscultation_node", "vitals_node", "symptoms_node"], "synthesis
 1. 오디오 흐름:
    .wav (원본) → 16kHz 모노 (리샘플링) → Mel Spectrogram (시각화)
                                         → AST 피처 (분류 입력)
-                                        → 5-class 확률 (분류 결과)
+                                        → 4-class 확률 (분류 결과)
 
 2. 생체신호 흐름:
    숫자 입력 → VitalSigns (Pydantic) → 정상 범위 비교 → 이상 소견 텍스트

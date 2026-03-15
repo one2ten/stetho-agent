@@ -9,7 +9,6 @@ from schemas.symptoms import (
     SYMPTOM_OPTIONS,
     SymptomInput,
 )
-from utils.config_loader import get_app_config
 
 
 def render_symptom_input() -> SymptomInput:

@@ -9,20 +9,30 @@ _PROJECT_ROOT = str(Path(__file__).resolve().parent.parent)
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-import logging
+import logging  # noqa: E402
 
-import streamlit as st
+import streamlit as st  # noqa: E402
 
-from agents.graph import graph
-from agents.state import AgentState
-from app.components.audio_uploader import render_audio_uploader
-from app.components.result_dashboard import render_result_dashboard
-from app.components.symptom_input import render_symptom_input
-from app.components.vitals_input import render_vitals_input
-from utils.config_loader import get_app_config
+from agents.graph import graph  # noqa: E402
+from agents.state import AgentState  # noqa: E402
+from app.components.audio_uploader import render_audio_uploader  # noqa: E402
+from app.components.result_dashboard import render_result_dashboard  # noqa: E402
+from app.components.symptom_input import render_symptom_input  # noqa: E402
+from app.components.vitals_input import render_vitals_input  # noqa: E402
+from models.llm_client import LLMClient  # noqa: E402
+from utils.config_loader import get_app_config  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
+
+
+def _check_ollama() -> bool:
+    """Ollama 서버 연결 상태 확인"""
+    try:
+        client = LLMClient()
+        return client.is_available()
+    except Exception:
+        return False
 
 
 def main() -> None:
@@ -41,6 +51,16 @@ def main() -> None:
     with st.sidebar:
         st.title("🩺 StethoAgent")
         st.caption(config.get("app", {}).get("description", "AI 기반 건강 가이드"))
+
+        st.divider()
+
+        # Ollama 상태 표시
+        ollama_ok = _check_ollama()
+        if ollama_ok:
+            st.success("Ollama 서버 연결됨", icon="🟢")
+        else:
+            st.error("Ollama 서버 연결 실패", icon="🔴")
+            st.caption("터미널에서 `ollama serve` 또는 Ollama 앱을 실행하세요.")
 
         st.divider()
 
@@ -86,8 +106,11 @@ def main() -> None:
         st.divider()
 
         # 분석 실행 버튼
-        if st.button("🔍 분석 실행", type="primary", use_container_width=True):
+        if st.button("🔍 분석 실행", type="primary", use_container_width=True, disabled=not ollama_ok):
             _run_analysis(vitals, symptoms, auscultation, user_mode)
+
+        if not ollama_ok:
+            st.warning("Ollama 서버가 연결되지 않아 분석을 실행할 수 없습니다.")
 
     # === 결과 탭 ===
     with tab_result:
@@ -98,7 +121,7 @@ def main() -> None:
 
 
 def _run_analysis(vitals, symptoms, auscultation, user_mode: str) -> None:
-    """에이전트 워크플로우 실행"""
+    """에이전트 워크플로우 실행 (진행 상태 표시)"""
     input_state: AgentState = {
         "vitals": vitals,
         "symptoms": symptoms,
@@ -107,15 +130,24 @@ def _run_analysis(vitals, symptoms, auscultation, user_mode: str) -> None:
     if auscultation is not None:
         input_state["auscultation"] = auscultation
 
-    with st.spinner("AI 분석을 진행하고 있습니다... (1-2분 소요될 수 있습니다)"):
-        try:
-            result = graph.invoke(input_state)
-            st.session_state["analysis_result"] = result
-            st.success("분석이 완료되었습니다! '결과' 탭에서 확인하세요.")
-            logger.info("워크플로우 실행 완료")
-        except Exception as e:
-            st.error(f"분석 중 오류가 발생했습니다: {e}")
-            logger.error("워크플로우 실행 실패: %s", e)
+    # 진행 상태 표시
+    progress_bar = st.progress(0, text="분석을 시작합니다...")
+
+    try:
+        progress_bar.progress(10, text="입력 데이터 검증 중...")
+        progress_bar.progress(20, text="청진음 · 생체신호 · 증상 병렬 분석 중... (CoT 추론)")
+        result = graph.invoke(input_state)
+        progress_bar.progress(90, text="결과 정리 중...")
+
+        st.session_state["analysis_result"] = result
+        progress_bar.progress(100, text="분석 완료!")
+        st.success("분석이 완료되었습니다! '결과' 탭에서 확인하세요.")
+        logger.info("워크플로우 실행 완료")
+
+    except Exception as e:
+        progress_bar.empty()
+        st.error(f"분석 중 오류가 발생했습니다: {e}")
+        logger.error("워크플로우 실행 실패: %s", e)
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ import pytest
 from schemas.vitals import VitalSigns
 from schemas.symptoms import SymptomInput
 from schemas.auscultation import AuscultationResult
-from schemas.report import RiskAssessment, AnalysisReport
+from schemas.report import RiskAssessment
 from schemas.literature import MedicalReference, LiteratureSearchResult
 
 

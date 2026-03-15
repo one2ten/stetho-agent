@@ -275,7 +275,6 @@ class MedicalSearchClient:
             vitals_mapping = self._query_mapping.get("vitals", {})
             vitals_ref = get_vitals_reference()
             hr_ref = vitals_ref.get("heart_rate", {}).get("normal", {})
-            bp_ref = vitals_ref.get("blood_pressure", {}).get("systolic", {}).get("normal", {})
             temp_ref = vitals_ref.get("body_temperature", {})
 
             if vitals.heart_rate > hr_ref.get("max", 100):

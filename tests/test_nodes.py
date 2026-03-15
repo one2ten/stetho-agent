@@ -3,10 +3,9 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 from agents.nodes.input_validator import input_validator
-from agents.nodes.risk_node import risk_node, _calculate_risk
+from agents.nodes.risk_node import risk_node
 from agents.state import AgentState
 from schemas.auscultation import AuscultationResult
 from schemas.report import RiskAssessment
@@ -192,10 +191,13 @@ class TestSynthesisNode:
             "auscultation_analysis": "정상 청진음",
             "vitals_evaluation": "정상 생체신호",
             "symptom_analysis": "경미한 기침",
+            "reasoning_trace": [],
         }
         result = synthesis_node(state)
 
         assert result["synthesis"] == "종합 분석 결과입니다."
+        assert "reasoning_trace" in result
+        assert any("[사고]" in t for t in result["reasoning_trace"])
 
 
 # =====================================================================
@@ -206,8 +208,13 @@ class TestSynthesisNode:
 class TestRiskNode:
     """위험도 평가 노드 테스트"""
 
-    def test_normal_inputs_low_risk(self, default_vitals, default_symptoms):
+    @patch("agents.nodes.risk_node.LLMClient")
+    def test_normal_inputs_low_risk(self, mock_llm_cls, default_vitals, default_symptoms):
         """정상 입력 → 낮은 위험도"""
+        mock_llm = MagicMock()
+        mock_llm.generate.return_value = '{"reasoning": "정상", "level": "low", "factors": ["없음"], "confidence": 0.9}'
+        mock_llm_cls.return_value = mock_llm
+
         state: AgentState = {
             "vitals": default_vitals,
             "symptoms": default_symptoms,
@@ -220,8 +227,13 @@ class TestRiskNode:
         assert risk.level == "low"
         assert risk.score < 25
 
-    def test_abnormal_vitals_increase_risk(self):
+    @patch("agents.nodes.risk_node.LLMClient")
+    def test_abnormal_vitals_increase_risk(self, mock_llm_cls):
         """비정상 생체신호 → 위험도 상승"""
+        mock_llm = MagicMock()
+        mock_llm.generate.return_value = '{"reasoning": "고위험", "level": "high", "factors": ["빈맥", "고혈압"], "confidence": 0.8}'
+        mock_llm_cls.return_value = mock_llm
+
         abnormal_vitals = VitalSigns(
             heart_rate=130,
             blood_pressure_sys=160,
@@ -239,8 +251,13 @@ class TestRiskNode:
         assert risk.score >= 50
         assert risk.immediate_action_needed is True
 
-    def test_abnormal_auscultation_adds_risk(self):
+    @patch("agents.nodes.risk_node.LLMClient")
+    def test_abnormal_auscultation_adds_risk(self, mock_llm_cls):
         """비정상 청진음 → +20점"""
+        mock_llm = MagicMock()
+        mock_llm.generate.return_value = '{"reasoning": "수포음", "level": "moderate", "factors": ["수포음"], "confidence": 0.7}'
+        mock_llm_cls.return_value = mock_llm
+
         auscultation = AuscultationResult(
             file_name="test.wav",
             classification="Crackle",
@@ -258,13 +275,33 @@ class TestRiskNode:
         assert risk.score >= 20
         assert any("청진음" in f for f in risk.factors)
 
-    def test_empty_state_low_risk(self):
+    @patch("agents.nodes.risk_node.LLMClient")
+    def test_empty_state_low_risk(self, mock_llm_cls):
         """빈 상태 → 낮은 위험도"""
+        mock_llm = MagicMock()
+        mock_llm.generate.return_value = '{"reasoning": "정보 없음", "level": "low", "factors": [], "confidence": 0.5}'
+        mock_llm_cls.return_value = mock_llm
+
         state: AgentState = {"synthesis": ""}
         result = risk_node(state)
         risk = result["risk_assessment"]
 
         assert risk.level == "low"
+
+    @patch("agents.nodes.risk_node.LLMClient")
+    def test_reasoning_trace_generated(self, mock_llm_cls, default_vitals):
+        """추론 추적 생성 확인"""
+        mock_llm = MagicMock()
+        mock_llm.generate.return_value = '{"reasoning": "정상", "level": "low", "factors": [], "confidence": 0.9}'
+        mock_llm_cls.return_value = mock_llm
+
+        state: AgentState = {"vitals": default_vitals, "synthesis": ""}
+        result = risk_node(state)
+
+        assert "reasoning_trace" in result
+        trace = result["reasoning_trace"]
+        assert any("[사고]" in t for t in trace)
+        assert any("[결론]" in t for t in trace)
 
 
 # =====================================================================

@@ -149,6 +149,22 @@ ollama rm <model-name>
 curl http://localhost:11434/api/tags
 ```
 
+#### Ollama 병렬 처리 설정
+
+LangGraph 워크플로우에서 3개 분석 노드(청진음/생체신호/증상)가 동시에 LLM을 호출합니다.
+병렬 처리를 활성화하면 분석 속도가 ~20% 향상됩니다:
+
+```bash
+# macOS에서 Ollama 환경변수 설정 (Ollama 앱 사용 시)
+launchctl setenv OLLAMA_NUM_PARALLEL 4
+
+# 설정 후 Ollama 앱 재시작 필요
+# (메뉴바 아이콘 → Quit Ollama → 다시 실행)
+
+# 또는 .env에 추가 (ollama serve 직접 실행 시)
+# OLLAMA_NUM_PARALLEL=4
+```
+
 ### 3.5 HuggingFace AST 모델 사전 다운로드
 
 ```bash
@@ -364,6 +380,26 @@ print(f'총 RAM: {gb:.1f}GB')
 ```
 
 ### 5.5 Streamlit 문제
+
+#### 외부 터미널에서 Streamlit 실행하기
+
+IDE 터미널이 아닌 별도 터미널(Terminal.app, iTerm2 등)에서 실행하는 방법:
+
+```bash
+# 1. 터미널을 열고 프로젝트 디렉토리로 이동
+cd /path/to/stetho-agent
+
+# 2. conda 환경 활성화 (중요!)
+source /opt/miniconda3/etc/profile.d/conda.sh  # conda init이 안 된 경우
+conda activate stetho-agent
+
+# 3. Streamlit 실행
+streamlit run app/main.py
+```
+
+> **주의**: `conda activate`가 동작하지 않으면 `source /opt/miniconda3/etc/profile.d/conda.sh`를 먼저 실행하세요. 또는 `~/.zshrc`에 conda init이 설정되어 있는지 확인하세요.
+
+브라우저에서 `http://localhost:8501`로 자동 열립니다.
 
 #### 포트 충돌
 

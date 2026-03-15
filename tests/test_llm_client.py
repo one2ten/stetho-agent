@@ -1,7 +1,6 @@
 """LLM 클라이언트 테스트"""
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
 
 import pytest
 

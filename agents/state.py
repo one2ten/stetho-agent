@@ -38,3 +38,6 @@ class AgentState(TypedDict, total=False):
     # === 최종 출력 ===
     recommendation: Optional[str]
     literature_references: Optional[LiteratureSearchResult]
+
+    # === 추론 추적 (CoT/ReAct) ===
+    reasoning_trace: Optional[list[str]]

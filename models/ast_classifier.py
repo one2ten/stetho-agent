@@ -8,7 +8,7 @@ import torch
 from transformers import ASTFeatureExtractor, ASTForAudioClassification
 
 from models.audio_preprocessor import AudioPreprocessor
-from schemas.auscultation import AUSCULTATION_CLASSES, AuscultationResult
+from schemas.auscultation import AuscultationResult
 from utils.config_loader import get_ast_config
 from utils.device_utils import get_device
 
